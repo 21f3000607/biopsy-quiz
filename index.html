@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Decode Life Quiz · Amrita Hospital</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #F4F1EE;
+    --surface:   #FFFFFF;
+    --surface2:  #FAF8F6;
+    --orange:    #E8845A;
+    --orange-lt: #FDE8DC;
+    --purple:    #8B6BAE;
+    --purple-lt: #EDE8F5;
+    --maroon:    #A0455A;
+    --maroon-lt: #F9E8EC;
+    --green:     #5D9E7B;
+    --green-lt:  #DFF2EA;
+    --red:       #C0605A;
+    --red-lt:    #FAECEB;
+    --text:      #2E2A26;
+    --text-mid:  #6B6460;
+    --text-dim:  #A09890;
+    --border:    #E8E2DC;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+  .app {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center;
+    padding: 28px 16px 56px;
+  }
+  /* HEADER */
+  .header {
+    width: 100%; max-width: 620px;
+    display: flex; align-items: center; gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 20px;
+    margin-bottom: 28px;
+  }
+  .logo-pair { display: flex; gap: 8px; }
+  .logo-pill {
+    padding: 5px 11px; border-radius: 8px;
+    font-size: 10px; font-weight: 700; line-height: 1.4;
+    text-align: center; letter-spacing: 0.3px;
+  }
+  .logo-h { background: var(--orange-lt); color: var(--orange); }
+  .logo-u { background: var(--maroon-lt); color: var(--maroon); }
+  .header-info { flex: 1; }
+  .header-info h1 { font-size: 14px; font-weight: 700; color: var(--text); }
+  .header-info p  { font-size: 12px; color: var(--text-dim); margin-top: 1px; }
+  .header-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--green); box-shadow: 0 0 0 3px var(--green-lt);
+    flex-shrink: 0;
+  }
+  /* CARD */
+  .card {
+    width: 100%; max-width: 620px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 40px;
+    animation: up 0.35s ease both;
+  }
+  @keyframes up {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  /* STEP */
+  .step-row { display: flex; align-items: center; gap: 8px; margin-bottom: 22px; }
+  .step-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); transition: background 0.3s; }
+  .step-dot.active { background: var(--orange); }
+  .step-dot.done   { background: var(--orange-lt); outline: 2px solid var(--orange); }
+  .step-label { font-size: 12px; color: var(--text-dim); margin-left: 4px; }
+  /* TYPOGRAPHY */
+  .page-title { font-size: 22px; font-weight: 700; color: var(--text); margin-bottom: 4px; line-height: 1.3; }
+  .page-sub   { font-size: 13px; color: var(--text-mid); margin-bottom: 28px; line-height: 1.5; }
+  hr.soft     { border: none; border-top: 1px solid var(--border); margin-bottom: 24px; }
+  /* FORM */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-grid .full { grid-column: 1 / -1; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  label { font-size: 12px; font-weight: 600; color: var(--text-mid); }
+  input, select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px; color: var(--text);
+    outline: none; width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -webkit-appearance: none;
+  }
+  input::placeholder { color: var(--text-dim); }
+  input:focus, select:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px var(--purple-lt);
+    background: var(--surface);
+  }
+  /* BUTTONS */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 11px 24px; border-radius: 10px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600; font-size: 14px;
+    cursor: pointer; border: none; transition: all 0.18s;
+  }
+  .btn-primary { background: var(--orange); color: white; box-shadow: 0 2px 8px rgba(232,132,90,0.3); }
+  .btn-primary:hover { background: #D9724A; box-shadow: 0 4px 14px rgba(232,132,90,0.4); }
+  .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; box-shadow: none; }
+  .btn-ghost { background: transparent; color: var(--text-mid); border: 1px solid var(--border); }
+  .btn-ghost:hover { border-color: var(--purple); color: var(--purple); }
+  .btn-row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 28px; }
+  /* DIFFICULTY */
+  .diff-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 4px; }
+  .diff-card {
+    padding: 20px 16px; border-radius: 14px;
+    border: 2px solid transparent;
+    cursor: pointer; text-align: center;
+    transition: all 0.2s;
+    background: var(--surface2);
+  }
+  .diff-card:hover { transform: translateY(-2px); }
+  .diff-card.easy     { --c: var(--green);  --cl: var(--green-lt);  }
+  .diff-card.moderate { --c: var(--orange); --cl: var(--orange-lt); }
+  .diff-card.hard     { --c: var(--maroon); --cl: var(--maroon-lt); }
+  .diff-card:hover,
+  .diff-card.selected { border-color: var(--c); background: var(--cl); }
+  .diff-icon { font-size: 28px; margin-bottom: 8px; }
+  .diff-name { font-size: 14px; font-weight: 700; color: var(--c); margin-bottom: 4px; }
+  .diff-desc { font-size: 11px; color: var(--text-mid); line-height: 1.4; }
+  .diff-tag {
+    margin-top: 10px; display: inline-block;
+    padding: 3px 9px; border-radius: 20px;
+    font-size: 10px; font-weight: 600;
+    background: var(--surface);
+    border: 1px solid var(--c); color: var(--c);
+  }
+  /* QUIZ */
+  .quiz-top {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 22px; flex-wrap: wrap;
+  }
+  .level-chip { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.3px; }
+  .chip-easy     { background: var(--green-lt);  color: var(--green); }
+  .chip-moderate { background: var(--orange-lt); color: var(--orange); }
+  .chip-hard     { background: var(--maroon-lt); color: var(--maroon); }
+  .progress-track { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--purple), var(--orange)); border-radius: 3px; transition: width 0.4s ease; }
+  .q-count { font-size: 12px; color: var(--text-dim); white-space: nowrap; }
+  .timer-box {
+    padding: 5px 12px; border-radius: 8px;
+    background: var(--surface2); border: 1px solid var(--border);
+    font-size: 14px; font-weight: 700; color: var(--text);
+    min-width: 52px; text-align: center;
+    transition: background 0.3s, color 0.3s;
+  }
+  .timer-box.urgent { background: var(--red-lt); color: var(--red); border-color: var(--red); animation: blink 0.8s ease infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.55} }
+  .q-label { font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .q-text  { font-size: 17px; font-weight: 600; line-height: 1.5; color: var(--text); margin-bottom: 22px; }
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px; border-radius: 12px;
+    border: 1.5px solid var(--border);
+    cursor: pointer; transition: all 0.18s;
+    font-size: 14px; color: var(--text);
+    background: var(--surface);
+    user-select: none;
+  }
+  .opt:hover:not(.locked) { border-color: var(--purple); background: var(--purple-lt); transform: translateX(3px); }
+  .opt.selected:not(.locked) { border-color: var(--purple); background: var(--purple-lt); }
+  .opt.correct { border-color: var(--green); background: var(--green-lt); color: var(--green); }
+  .opt.wrong   { border-color: var(--red);   background: var(--red-lt);   color: var(--red); }
+  .opt-letter {
+    width: 28px; height: 28px; border-radius: 7px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    background: var(--border); color: var(--text-mid);
+    transition: all 0.18s;
+  }
+  .opt.selected .opt-letter { background: var(--purple); color: white; }
+  .opt.correct  .opt-letter { background: var(--green); color: white; }
+  .opt.wrong    .opt-letter { background: var(--red); color: white; }
+  .exp-box {
+    margin-top: 14px; padding: 12px 16px; border-radius: 10px;
+    font-size: 13px; line-height: 1.55;
+    animation: up 0.25s ease;
+  }
+  .exp-box.ok  { background: var(--green-lt); color: #376650; border: 1px solid #B2DFC8; }
+  .exp-box.bad { background: var(--orange-lt); color: #8A4A28; border: 1px solid #F2C4A8; }
+  /* RESULTS */
+  .score-area {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 20px 0 20px;
+  }
+  .score-ring { position: relative; width: 130px; height: 130px; }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-center {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .score-num { font-size: 32px; font-weight: 700; color: var(--text); line-height: 1; }
+  .score-sub { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+  .result-name { font-size: 17px; font-weight: 700; margin-top: 14px; text-align: center; }
+  .result-msg  { font-size: 13px; color: var(--text-mid); margin-top: 4px; text-align: center; }
+  .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin: 20px 0; }
+  .stat { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 14px 10px; text-align: center; }
+  .stat-val { font-size: 22px; font-weight: 700; }
+  .stat-val.c { color: var(--green); }
+  .stat-val.w { color: var(--red); }
+  .stat-val.t { color: var(--purple); }
+  .stat-lbl { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+  .review-head { font-size: 13px; font-weight: 700; color: var(--text-mid); margin-bottom: 10px; }
+  .review-scroll { max-height: 260px; overflow-y: auto; padding-right: 4px; }
+  .review-scroll::-webkit-scrollbar { width: 3px; }
+  .review-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+  .rev-item {
+    display: flex; gap: 10px; align-items: flex-start;
+    padding: 11px 14px; border-radius: 10px; margin-bottom: 7px;
+    font-size: 13px; border-left: 3px solid;
+    background: var(--surface2);
+  }
+  .rev-item.c { border-color: var(--green); }
+  .rev-item.w { border-color: var(--red); }
+  .rev-q { color: var(--text); line-height: 1.4; }
+  .rev-a { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
+  .rev-a em { color: var(--green); font-style: normal; font-weight: 600; }
+  .hidden { display: none !important; }
+  @media (max-width: 540px) {
+    .card { padding: 24px 20px; }
+    .form-grid { grid-template-columns: 1fr; }
+    .diff-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <img src="./assets/logo.png" style="width:52px;height:52px;object-fit:contain;border-radius:50%;">
+    <div class="header-info">
+      <h1>Decode Life Quiz</h1>
+      <p>Molecular Lab Open Day · 14 March 2026</p>
+    </div>
+    <div class="header-dot"></div>
+  </div>
+
+  <!-- PAGE 1 · DETAILS -->
+  <div class="card" id="p-details">
+    <div class="step-row">
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <div class="step-dot"></div>
+      <span class="step-label">Step 1 of 3 · Your Details</span>
+    </div>
+    <div class="page-title"><img src="./assets/gene-logo.jpeg" style="width:52px;height:52px;object-fit:contain;vertical-align:middle;margin-right:8px;">Let's get to know you</div>
+    <div class="page-sub">Fill in a few quick details before the quiz begins.</div>
+    <hr class="soft">
+    <div class="form-grid">
+      <div class="form-group">
+        <label>First Name *</label>
+        <input id="fname" type="text" placeholder="e.g. Priya">
+      </div>
+      <div class="form-group">
+        <label>Last Name *</label>
+        <input id="lname" type="text" placeholder="e.g. Sharma">
+      </div>
+      <div class="form-group full">
+        <label>Email Address *</label>
+        <input id="email" type="email" placeholder="you@example.com">
+      </div>
+      <div class="form-group">
+        <label>Mobile</label>
+        <input id="phone" type="tel" placeholder="+91 XXXXX XXXXX">
+      </div>
+      <div class="form-group">
+        <label>Profession *</label>
+        <select id="profession">
+          <option value="">Select role</option>
+          <option>Clinician / Doctor</option>
+          <option>Pathologist</option>
+          <option>Medical Student</option>
+          <option>Researcher / PhD Scholar</option>
+          <option>Lab Technologist / Technician</option>
+          <option>Allied Health Professional</option>
+          <option>Genomics Enthusiast</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Institution</label>
+        <input id="institution" type="text" placeholder="e.g. Amrita Hospital, Faridabad">
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="toDifficulty()">Continue →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 2 · DIFFICULTY -->
+  <div class="card hidden" id="p-diff">
+    <div class="step-row">
+      <div class="step-dot done"></div>
+      <div class="step-dot active"></div>
+      <div class="step-dot"></div>
+      <span class="step-label">Step 2 of 3 · Choose Level</span>
+    </div>
+    <div class="page-title">How confident are you? 🎯</div>
+    <div class="page-sub">Pick a difficulty — timed questions with instant feedback after each answer.</div>
+    <hr class="soft">
+    <div class="diff-grid">
+      <div class="diff-card easy" onclick="pickDiff('easy',this)">
+        <div class="diff-icon">🌱</div>
+        <div class="diff-name">Easy</div>
+        <div class="diff-desc">Liquid biopsy basics · 8 questions</div>
+        <div class="diff-tag">Genetics Newbie</div>
+      </div>
+      <div class="diff-card moderate" onclick="pickDiff('moderate',this)">
+        <div class="diff-icon">🔬</div>
+        <div class="diff-name">Moderate</div>
+        <div class="diff-desc">Molecular diagnostics · 9 questions</div>
+        <div class="diff-tag">Gene Explorer</div>
+      </div>
+      <div class="diff-card hard" onclick="pickDiff('hard',this)">
+        <div class="diff-icon">🧬</div>
+        <div class="diff-name">Hard</div>
+        <div class="diff-desc">Advanced clinical genomics · 6 questions</div>
+        <div class="diff-tag">Molecular Master</div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="showPage('p-details')">← Back</button>
+      <button class="btn btn-primary" id="start-btn" disabled onclick="startQuiz()">Start Quiz →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 3 · QUIZ -->
+  <div class="card hidden" id="p-quiz">
+    <div class="quiz-top">
+      <div class="level-chip" id="q-chip"></div>
+      <div class="progress-track">
+        <div class="progress-fill" id="q-prog" style="width:10%"></div>
+      </div>
+      <div class="q-count" id="q-count">1 / 10</div>
+      <div class="timer-box" id="timer">30</div>
+    </div>
+    <div class="q-label" id="q-label">Question 1</div>
+    <div class="q-text" id="q-text"></div>
+    <div class="options" id="q-opts"></div>
+    <div id="exp-box" class="hidden"></div>
+    <div class="btn-row" style="margin-top:20px">
+      <button class="btn btn-primary hidden" id="next-btn" onclick="nextQ()">Next →</button>
+    </div>
+  </div>
+
+  <!-- PAGE 4 · RESULTS -->
+  <div class="card hidden" id="p-results">
+    <div class="step-row">
+      <div class="step-dot done"></div>
+      <div class="step-dot done"></div>
+      <div class="step-dot active"></div>
+      <span class="step-label">Step 3 of 3 · Your Score</span>
+    </div>
+    <div class="score-area">
+      <div class="score-ring">
+        <svg width="130" height="130" viewBox="0 0 130 130">
+          <circle cx="65" cy="65" r="54" fill="none" stroke="#EEE8E2" stroke-width="9"/>
+          <circle cx="65" cy="65" r="54" fill="none" id="ring-path"
+            stroke="url(#rg)" stroke-width="9" stroke-linecap="round"
+            stroke-dasharray="339.3" stroke-dashoffset="339.3"
+            style="transition:stroke-dashoffset 1s ease"/>
+          <defs>
+            <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#8B6BAE"/>
+              <stop offset="100%" stop-color="#E8845A"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <div class="score-center">
+          <div class="score-num" id="r-num">0</div>
+          <div class="score-sub" id="r-denom">out of 10</div>
+        </div>
+      </div>
+      <div class="result-name" id="r-title"></div>
+      <div class="result-msg"  id="r-msg"></div>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-val c" id="r-correct">0</div><div class="stat-lbl">Correct</div></div>
+      <div class="stat"><div class="stat-val w" id="r-wrong">0</div><div class="stat-lbl">Wrong</div></div>
+      <div class="stat"><div class="stat-val t" id="r-time">—</div><div class="stat-lbl">Avg Time</div></div>
+    </div>
+    <div class="review-head">Question Review</div>
+    <div class="review-scroll" id="rev-list"></div>
+    <div class="btn-row" style="justify-content:center;margin-top:20px">
+      <button class="btn btn-ghost" onclick="retake()">↺ Try Again</button>
+      <button class="btn btn-primary" onclick="window.print()">Print Result</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const QB = {
+  easy: [
+    {
+      q: "Blood-based genetic testing that analyzes tumor-derived DNA using sequencing technologies is called:",
+      opts: ["Tissue biopsy", "Liquid biopsy", "Cytology", "Flow cytometry"],
+      a: 1,
+      exp: "Liquid biopsy is a minimally invasive blood-based test that detects tumor-derived DNA and other analytes circulating in the bloodstream."
+    },
+    {
+      q: "Which blood component is most commonly used for circulating cell-free DNA (cfDNA) extraction?",
+      opts: ["Serum", "Plasma", "Whole blood", "Buffy coat"],
+      a: 1,
+      exp: "Plasma is preferred for cfDNA extraction because it contains fewer contaminating genomic DNA fragments from white blood cells compared to serum."
+    },
+    {
+      q: "DNA fragments freely circulating in the bloodstream are collectively called:",
+      opts: ["Genomic DNA", "cfDNA", "mtDNA", "Recombinant DNA"],
+      a: 1,
+      exp: "cfDNA (cell-free DNA) refers to all DNA fragments freely circulating in body fluids, including both normal and tumor-derived fragments."
+    },
+    {
+      q: "Which technology is most commonly used to analyze mutations in circulating tumor DNA (ctDNA)?",
+      opts: ["ELISA", "Western blot", "Next-Generation Sequencing (NGS)", "Karyotyping"],
+      a: 2,
+      exp: "Next-Generation Sequencing (NGS) enables massively parallel sequencing, making it ideal for detecting low-frequency mutations in ctDNA."
+    },
+    {
+      q: "DNA fragments released from tumor cells and detected in blood are referred to as:",
+      opts: ["cfRNA", "ctDNA", "mtDNA", "rDNA"],
+      a: 1,
+      exp: "ctDNA (circulating tumor DNA) specifically refers to DNA fragments shed by tumor cells into the bloodstream, carrying tumour-specific mutations."
+    },
+    {
+      q: "Detection of residual cancer cells after treatment using liquid biopsy is referred to as:",
+      opts: ["MSI", "MRD", "TMB", "CNV"],
+      a: 1,
+      exp: "MRD (Minimal Residual Disease) detection using liquid biopsy identifies remaining tumour DNA after treatment, helping assess response and predict relapse."
+    },
+    {
+      q: "Which of the following is NOT a component of liquid biopsy?",
+      opts: ["Circulating Tumor Cells (CTC)", "Tumor Educated Platelets (TEP)", "White Blood Cells (WBC)", "Cell-free DNA (cfDNA)"],
+      a: 2,
+      exp: "White Blood Cells (WBC) are not analytes in liquid biopsy. CTCs, TEPs, cfDNA, and exosomes are the key tumour-derived components analysed."
+    },
+    {
+      q: "Liquid biopsy is considered advantageous because it is:",
+      opts: ["Time-consuming", "Expensive", "Minimally invasive", "Slow"],
+      a: 2,
+      exp: "Liquid biopsy requires only a simple blood draw, making it minimally invasive — a major advantage over surgical tissue biopsies."
+    }
+  ],
+  moderate: [
+    {
+      q: "What is the major biological process responsible for the release of circulating tumor DNA (ctDNA) into the bloodstream?",
+      opts: ["Apoptosis only", "Apoptosis and necrosis", "Autophagy", "Active secretion"],
+      a: 1,
+      exp: "ctDNA is primarily released through apoptosis (programmed cell death) and necrosis (uncontrolled cell death), both of which fragment DNA into the circulation."
+    },
+    {
+      q: "What is the average fragment size of circulating cell-free DNA (cfDNA) found in plasma?",
+      opts: ["~50 bp", "~100 bp", "~170 bp", "~500 bp"],
+      a: 2,
+      exp: "cfDNA fragments are typically ~170 bp, corresponding to DNA wrapped around a nucleosome (~147 bp) plus the linker region — a reflection of nucleosomal protection during apoptosis."
+    },
+    {
+      q: "Which tumor-secreted vesicles can serve as an alternative analyte in liquid biopsy?",
+      opts: ["Lysosomes", "Exosomes", "Ribosomes", "Peroxisomes"],
+      a: 1,
+      exp: "Exosomes are nano-sized vesicles (30–150 nm) secreted by tumour cells, carrying DNA, RNA, and proteins — making them valuable liquid biopsy analytes."
+    },
+    {
+      q: "Which specialised blood collection tube is commonly used to prevent leukocyte lysis and stabilise cfDNA during transport of >4 hrs?",
+      opts: ["EDTA tube", "Heparin tube", "Streck tube", "Citrate tube"],
+      a: 2,
+      exp: "Streck tubes contain a fixative that prevents leukocyte lysis and stabilises cfDNA at room temperature for up to 14 days, ideal for long transport times."
+    },
+    {
+      q: "Which approach combines mutation analysis, methylation profiling, and DNA fragmentation patterns for improved cancer detection?",
+      opts: ["Metabolomics", "Transcriptomics", "Multiomics", "Proteomics"],
+      a: 2,
+      exp: "Multiomics integrates multiple data layers — mutations, methylation, and fragmentomics — to improve sensitivity and specificity of liquid biopsy-based cancer detection."
+    },
+    {
+      q: "What does NIPT stand for?",
+      opts: ["Non-Invasive Prenatal Testing", "Neonatal Integrated Pregnancy Test", "Non-Integrated Prenatal Technology", "Nucleic Integrated Prenatal Test"],
+      a: 0,
+      exp: "NIPT (Non-Invasive Prenatal Testing) analyses cell-free fetal DNA in maternal plasma to screen for chromosomal abnormalities such as trisomy 21, 18, and 13."
+    },
+    {
+      q: "In which technique are nucleic acid samples partitioned into thousands of droplets using a water-oil emulsion system for highly sensitive detection?",
+      opts: ["Real-time PCR", "Sanger sequencing", "Digital droplet PCR (ddPCR)", "Multiplex ligation PCR"],
+      a: 2,
+      exp: "ddPCR partitions samples into thousands of water-in-oil droplets, enabling absolute quantification of rare variants — ideal for low-frequency ctDNA detection."
+    },
+    {
+      q: "In liquid biopsy, TEP refers to:",
+      opts: ["Tumor Encoded Proteins", "Tumor Educated Platelets", "Targeted Enrichment Panel", "Tumor Expression Profile"],
+      a: 1,
+      exp: "Tumor Educated Platelets (TEPs) are platelets that take up tumour-derived RNA and biomolecules, altering their RNA profile — making them informative liquid biopsy analytes."
+    },
+    {
+      q: "The ESR1 gene encodes which receptor involved in breast cancer biology?",
+      opts: ["Progesterone receptor", "Estrogen receptor", "HER2 receptor", "Androgen receptor"],
+      a: 1,
+      exp: "ESR1 encodes the estrogen receptor alpha (ERα). ESR1 mutations detected in ctDNA are associated with resistance to aromatase inhibitors in hormone receptor-positive breast cancer."
+    }
+  ],
+  hard: [
+    {
+      q: "A patient with NSCLC initially responds to gefitinib but later develops resistance. NGS detects a secondary mutation responsible. Which mutation is most commonly responsible?",
+      opts: ["EGFR L858R", "EGFR T790M", "KRAS G12D", "BRAF V600E"],
+      a: 1,
+      exp: "EGFR T790M is the most common acquired resistance mechanism to first- and second-generation EGFR TKIs (e.g. gefitinib), detected in ~50–60% of resistant cases. Osimertinib targets T790M."
+    },
+    {
+      q: "Apart from circulating tumor DNA, which tumor-derived structure present in body fluids can be used as an alternative analyte in liquid biopsy?",
+      opts: ["Platelets", "Exosomes", "Neutrophils", "Complement proteins"],
+      a: 1,
+      exp: "Exosomes (30–150 nm vesicles) carry tumour-derived DNA, RNA, and proteins. They protect cargo from degradation and can be isolated from plasma, urine, and other fluids."
+    },
+    {
+      q: "Which epigenetic modification of circulating cell-free DNA is widely used for cancer detection and early screening?",
+      opts: ["Acetylation", "Phosphorylation", "Methylation", "Glycosylation"],
+      a: 2,
+      exp: "DNA methylation patterns (especially promoter hypermethylation) are tumour-specific and stable in cfDNA, forming the basis of multi-cancer early detection tests such as Galleri."
+    },
+    {
+      q: "The NHS-Galleri trial (142,000 participants) showed mixed outcomes. What did the trial successfully prove?",
+      opts: [
+        "The test completely replaced mammograms",
+        "The test significantly increased detection of Stage 1 and 2 cancers compared to standard care",
+        "Stage 3 and Stage 4 cancers can be entirely eliminated",
+        "The trial was a total failure with no benefit"
+      ],
+      a: 1,
+      exp: "While the Galleri trial did not meet its primary endpoint of reducing late-stage cancer diagnoses, it demonstrated significantly improved detection of early-stage (Stage 1 & 2) cancers — a clinically important finding."
+    },
+    {
+      q: "Age-related hematopoietic mutations that can interfere with circulating DNA analysis and cause false positive results are referred to as:",
+      opts: ["LOH", "MSI", "CHIP", "CNV"],
+      a: 2,
+      exp: "CHIP (Clonal Hematopoiesis of Indeterminate Potential) refers to somatic mutations in blood stem cells that increase with age and can mimic ctDNA, causing false-positive liquid biopsy results."
+    },
+    {
+      q: "In NGS reports, which bioinformatic metric represents the fraction of sequencing reads carrying a specific mutation?",
+      opts: ["Read depth", "Variant allele frequency (VAF)", "Coverage", "Base quality score"],
+      a: 1,
+      exp: "VAF (Variant Allele Frequency) = (reads with variant / total reads at that locus) x 100. It reflects tumour burden and helps distinguish true somatic mutations from sequencing artefacts."
+    }
+  ]
+};
+
+const S = { name:'', diff:'', qi:0, score:0, answers:[], times:[], qs:[], timer:null, secs:30, qstart:0, done:false };
+const TSECS = { easy:40, moderate:35, hard:30 };
+const TITLES = {
+  easy:     ['Genetics Newbie 🌱','Gene Explorer 🌿','DNA Decoder 🧪','Molecular Master 🔬'],
+  moderate: ['Gene Explorer 🔬','DNA Decoder 🧬','Genomics Ace 🧪','Genomics Wizard 🌟'],
+  hard:     ['DNA Decoder 🧬','Molecular Master 🔬','Genomics Oracle 🌌','Sequencing Star ⭐']
+};
+
+function showPage(id){
+  ['p-details','p-diff','p-quiz','p-results'].forEach(p=>{
+    document.getElementById(p).classList.add('hidden');
+  });
+  const el=document.getElementById(id);
+  el.classList.remove('hidden');
+  el.style.animation='none'; void el.offsetWidth; el.style.animation='';
+}
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+
+function toDifficulty(){
+  const fn=document.getElementById('fname').value.trim();
+  const ln=document.getElementById('lname').value.trim();
+  const em=document.getElementById('email').value.trim();
+  const pr=document.getElementById('profession').value;
+  if(!fn||!ln) return alert('Please enter your first and last name.');
+  if(!em||!/\S+@\S+\.\S+/.test(em)) return alert('Please enter a valid email address.');
+  if(!pr) return alert('Please select your profession.');
+  S.name=fn+' '+ln; showPage('p-diff');
+}
+
+let pickedEl=null;
+function pickDiff(lv,el){
+  if(pickedEl) pickedEl.classList.remove('selected');
+  el.classList.add('selected'); pickedEl=el; S.diff=lv;
+  document.getElementById('start-btn').disabled=false;
+}
+
+function startQuiz(){
+  if(!S.diff)return;
+  S.qs=shuffle([...QB[S.diff]]); S.qi=0; S.score=0; S.answers=[]; S.times=[];
+  showPage('p-quiz');
+  const chip=document.getElementById('q-chip');
+  chip.textContent=S.diff.charAt(0).toUpperCase()+S.diff.slice(1);
+  chip.className='level-chip chip-'+S.diff;
+  renderQ();
+}
+
+function renderQ(){
+  S.done=false;
+  const q=S.qs[S.qi], total=S.qs.length, i=S.qi;
+  document.getElementById('q-label').textContent='Question '+(i+1);
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('q-count').textContent=(i+1)+' / '+total;
+  document.getElementById('q-prog').style.width=((i+1)/total*100)+'%';
+  const grid=document.getElementById('q-opts'); grid.innerHTML='';
+  ['A','B','C','D'].forEach((lt,k)=>{
+    const d=document.createElement('div'); d.className='opt'; d.dataset.i=k;
+    d.innerHTML='<div class="opt-letter">'+lt+'</div><span>'+q.opts[k]+'</span>';
+    d.onclick=()=>pick(k); grid.appendChild(d);
+  });
+  const eb=document.getElementById('exp-box'); eb.className='hidden'; eb.innerHTML='';
+  document.getElementById('next-btn').classList.add('hidden');
+  startTimer(); S.qstart=Date.now();
+}
+
+function pick(chosen){
+  if(S.done)return; S.done=true; clearInterval(S.timer);
+  const elapsed=Math.round((Date.now()-S.qstart)/1000); S.times.push(elapsed);
+  const q=S.qs[S.qi];
+  document.querySelectorAll('.opt').forEach(o=>o.classList.add('locked'));
+  const ok=(chosen===q.a);
+  document.querySelectorAll('.opt')[chosen].classList.add(ok?'correct':'wrong');
+  if(!ok) document.querySelectorAll('.opt')[q.a].classList.add('correct');
+  if(ok) S.score++;
+  S.answers.push({chosen,correct:q.a,ok});
+  const eb=document.getElementById('exp-box');
+  eb.className='exp-box '+(ok?'ok':'bad');
+  eb.innerHTML='<strong>'+(ok?'Correct! ✅':'Incorrect. ❌')+'</strong> '+q.exp;
+  eb.classList.remove('hidden');
+  const nb=document.getElementById('next-btn'); nb.classList.remove('hidden');
+  nb.textContent=S.qi===S.qs.length-1?'See Results →':'Next →';
+}
+
+function nextQ(){
+  if(S.qi<S.qs.length-1){ S.qi++; renderQ(); } else showResults();
+}
+
+function startTimer(){
+  clearInterval(S.timer);
+  S.secs=TSECS[S.diff]||30;
+  const el=document.getElementById('timer');
+  el.textContent=S.secs; el.className='timer-box';
+  S.timer=setInterval(()=>{
+    S.secs--; el.textContent=S.secs;
+    if(S.secs<=8) el.className='timer-box urgent';
+    if(S.secs<=0){
+      clearInterval(S.timer);
+      if(!S.done){
+        S.done=true;
+        S.times.push(TSECS[S.diff]);
+        S.answers.push({chosen:-1,correct:S.qs[S.qi].a,ok:false});
+        document.querySelectorAll('.opt').forEach(o=>o.classList.add('locked'));
+        document.querySelectorAll('.opt')[S.qs[S.qi].a].classList.add('correct');
+        const eb=document.getElementById('exp-box');
+        eb.className='exp-box bad';
+        eb.innerHTML='<strong>Time\'s up! ⏰</strong> '+S.qs[S.qi].exp;
+        eb.classList.remove('hidden');
+        const nb=document.getElementById('next-btn'); nb.classList.remove('hidden');
+        nb.textContent=S.qi===S.qs.length-1?'See Results →':'Next →';
+      }
+    }
+  },1000);
+}
+
+function showResults(){
+  clearInterval(S.timer); showPage('p-results');
+  const sc=S.score, wr=S.qs.length-sc;
+  const avg=S.times.length?Math.round(S.times.reduce((a,b)=>a+b,0)/S.times.length):0;
+  const total=S.qs.length;
+  const pct=sc/total;
+  document.getElementById('r-num').textContent=sc;
+  document.getElementById('r-denom').textContent='out of '+total;
+  document.getElementById('r-correct').textContent=sc;
+  document.getElementById('r-wrong').textContent=wr;
+  document.getElementById('r-time').textContent=avg+'s';
+  setTimeout(()=>{ document.getElementById('ring-path').style.strokeDashoffset=339.3*(1-pct); },300);
+  const tier=pct<=0.4?0:pct<=0.65?1:pct<=0.85?2:3;
+  document.getElementById('r-title').textContent=S.name+' — '+TITLES[S.diff][tier];
+  document.getElementById('r-msg').textContent=
+    pct<=0.4?'Keep exploring — genomics is a journey!':
+    pct<=0.65?'Good effort! Keep diving deeper.':
+    pct<=0.85?'Impressive knowledge of genomics!':
+    'Outstanding! You\'re at the top of the genomics game! 🏆';
+  const rl=document.getElementById('rev-list'); rl.innerHTML='';
+  S.qs.forEach((q,i)=>{
+    const ans=S.answers[i];
+    const div=document.createElement('div'); div.className='rev-item '+(ans.ok?'c':'w');
+    const chosen=ans.chosen>=0?q.opts[ans.chosen]:'No answer (timeout)';
+    div.innerHTML='<span style="font-size:15px">'+(ans.ok?'✅':'❌')+'</span><div><div class="rev-q">'+q.q+'</div><div class="rev-a">Your answer: '+chosen+(!ans.ok?' · Correct: <em>'+q.opts[q.a]+'</em>':'')+'</div></div>';
+    rl.appendChild(div);
+  });
+}
+
+function retake(){
+  S.diff=''; pickedEl=null;
+  document.querySelectorAll('.diff-card').forEach(c=>c.classList.remove('selected'));
+  document.getElementById('start-btn').disabled=true;
+  showPage('p-diff');
+}
+</script>
+</body>
+</html>
